@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { ClientProxyFactory } from '@nestjs/microservices';
-import { AppController } from './app.controller';
-// import { AppService } from './app.service';
 import { AuthController } from './controller/auth.controller';
 import { UserController } from './controller/user.controller';
+import { HttpExceptionFilter } from './providers/interceptor/http-exception.filter';
+import { ApiInterceptor } from './providers/interceptor/api.interceptor';
 import { ConfigService } from './services/config/config.service';
 
 @Module({
@@ -25,6 +26,8 @@ import { ConfigService } from './services/config/config.service';
       },
       inject: [ConfigService],
     },
+    { provide: APP_INTERCEPTOR, useClass: ApiInterceptor },
+    { provide: APP_FILTER, useClass: HttpExceptionFilter },
   ],
 })
 export class AppModule {}

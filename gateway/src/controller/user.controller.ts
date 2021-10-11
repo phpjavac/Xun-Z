@@ -15,19 +15,23 @@ import { CreateUserDto } from '../interface/user/dto/create-user.dto';
 import { IServiceUserCreateResponse } from '../interface/user/service-user-create-response.interface';
 import { Logger } from '../utils/log4js';
 import { Response } from 'express';
+import { IUser } from '../interface/user/user.interface';
+import { ApiException } from '../providers/interceptor/api.interceptor';
+import { ApiCode } from '../enum/api-code.enum';
 
 @Controller('user')
 @ApiTags('user')
 export class UserController {
   constructor(@Inject('USER_SERVICE') private userServiceClient: ClientProxy) {}
   @Post('create')
-  async createUser(
-    @Body() userRequest: CreateUserDto,
-  ): Promise<IServiceUserCreateResponse> {
-    const createUserResponse: IServiceUserCreateResponse = await firstValueFrom(
+  async createUser(@Body() userRequest: CreateUserDto): Promise<string> {
+    const createUserResponse: IUser = await firstValueFrom(
       this.userServiceClient.send('user_create', userRequest),
     );
-    return createUserResponse;
+    if (createUserResponse === null) {
+      throw new ApiException('用户已被注册', ApiCode.PARAMS_ERROR, 200);
+    }
+    return '注册成功';
   }
   @Get(':code')
   @ApiParam({

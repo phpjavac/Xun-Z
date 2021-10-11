@@ -4,7 +4,8 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
 } from 'typeorm';
-
+import * as md5 from 'md5';
+const defaultPassword = md5('123456');
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -24,4 +25,7 @@ export class User {
 
   @Column({ default: false })
   disable: boolean;
+
+  @Column({ default: defaultPassword })
+  password: string;
 }

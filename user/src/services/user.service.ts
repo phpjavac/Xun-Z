@@ -17,6 +17,10 @@ export class UserService {
 
   public async createUser(createUserDto: IUser): Promise<User> {
     const user = new User();
+    const userFin = await this.usersRepository.findOne(createUserDto.code);
+    if (userFin) {
+      return null;
+    }
     user.code = createUserDto.code;
     user.name = createUserDto.name;
     user.role = createUserDto.role;
