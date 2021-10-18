@@ -8,13 +8,7 @@ import { User } from './users/user.entity';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      // ...new ConfigService().get('sql'),
-      type: 'mysql',
-      host: '192.168.1.147',
-      port: 3306,
-      username: 'root',
-      password: '123456',
-      database: 'web_blog',
+      ...new ConfigService().get('sql'),
       entities: [User],
       synchronize: true,
     }),
