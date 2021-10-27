@@ -5,6 +5,8 @@ import { User } from './users/user.entity';
 import { Repository } from 'typeorm';
 import { ClientProxy } from '@nestjs/microservices';
 import { Inject } from '@nestjs/common';
+import * as md5 from 'md5';
+const jsonwebtoken = require('jsonwebtoken');
 
 @Injectable()
 export class UserService {
@@ -32,10 +34,13 @@ export class UserService {
 
   public async loginUser(userInfo: UserInfo) {
     const userFin = await this.usersRepository.findOne(userInfo.code);
-    console.log(userFin);
-    console.log(userInfo);
-    if (!userFin || userFin.password !== userInfo.password)
-      return '用户名或密码不正确';
-    return '登陆成功';
+    if (!userFin || userFin.password !== md5(userInfo.password)) return false;
+    const { code, role } = userFin;
+    console.log(jsonwebtoken);
+    const token = jsonwebtoken.sign({ code, role }, 'duex', {
+      expiresIn: '1d',
+    });
+
+    return { code, role, token };
   }
 }

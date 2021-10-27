@@ -28,6 +28,7 @@
     "@nestjs/swagger": "^5.0.9",
     "@nestjs/typeorm": "^8.0.2",
     "dotenv": "^10.0.0",
+    "jsonwebtoken": "^8.5.1",
     "md5": "^2.3.0",
     "mysql2": "^2.3.0",
     "reflect-metadata": "^0.1.13",
