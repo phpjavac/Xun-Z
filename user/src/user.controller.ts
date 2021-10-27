@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { IUser } from './interfaces/user/user.interface';
+import { IUser, UserInfo } from './interfaces/user/user.interface';
 import { UserService } from './user.service';
 import { User } from './users/user.entity';
 
@@ -10,6 +10,12 @@ export class UserController {
   @MessagePattern('user_create')
   public async createUser(userParams: IUser): Promise<User> {
     const result: User = await this.appService.createUser(userParams);
+    return result;
+  }
+
+  @MessagePattern('user_login')
+  public async loginUser(userParams: UserInfo) {
+    const result = await this.appService.loginUser(userParams);
     return result;
   }
 

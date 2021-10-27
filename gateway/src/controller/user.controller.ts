@@ -18,6 +18,7 @@ import { Response } from 'express';
 import { IUser } from '../interface/user/user.interface';
 import { ApiException } from '../providers/interceptor/api.interceptor';
 import { ApiCode } from '../enum/api-code.enum';
+import { loginUserDto } from '../interface/user/dto/login-user-dto';
 
 @Controller('user')
 @ApiTags('user')
@@ -32,6 +33,13 @@ export class UserController {
       throw new ApiException('用户已被注册', ApiCode.PARAMS_ERROR, 200);
     }
     return '注册成功';
+  }
+  @Post('login')
+  async loginUser(@Body() userInfo: loginUserDto) {
+    const loginUserResponse = await firstValueFrom(
+      this.userServiceClient.send('user_login', userInfo),
+    );
+    return loginUserResponse;
   }
   @Get(':code')
   @ApiParam({
