@@ -3,13 +3,14 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { ClientProxyFactory } from '@nestjs/microservices';
 import { AuthController } from './controller/auth.controller';
 import { UserController } from './controller/user.controller';
+import { BlogController } from './controller/blog.controller';
 import { HttpExceptionFilter } from './providers/interceptor/http-exception.filter';
 import { ApiInterceptor } from './providers/interceptor/api.interceptor';
 import { ConfigService } from './services/config/config.service';
 
 @Module({
   imports: [],
-  controllers: [UserController, AuthController],
+  controllers: [UserController, AuthController, BlogController],
   providers: [
     ConfigService,
     {
@@ -23,6 +24,13 @@ import { ConfigService } from './services/config/config.service';
       provide: 'USER_SERVICE',
       useFactory: (configService: ConfigService) => {
         return ClientProxyFactory.create(configService.get('user'));
+      },
+      inject: [ConfigService],
+    },
+    {
+      provide: 'BLOG_SERVICE',
+      useFactory: (configService: ConfigService) => {
+        return ClientProxyFactory.create(configService.get('blog'));
       },
       inject: [ConfigService],
     },

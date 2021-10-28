@@ -13,6 +13,11 @@ export class AuthController {
   @MessagePattern('auth_user_login')
   async login(loginInfo: LoginUserFace) {
     const result = await this.appService.login(loginInfo);
-    return true;
+    return result;
+  }
+  @MessagePattern('auth_login_token')
+  async authLoginToken(userId: string) {
+    const result = await this.appService.authLoginToken(userId);
+    return result;
   }
 }

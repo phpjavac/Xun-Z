@@ -18,6 +18,12 @@ export class ConfigService {
       },
       transport: Transport.TCP,
     };
+    this.envConfig.blog = {
+      options: {
+        port: process.env.BLOG_SERVICE_PORT,
+      },
+      transport: Transport.TCP,
+    };
   }
 
   get(key: string): any {

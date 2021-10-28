@@ -3,7 +3,6 @@ import { MessagePattern } from '@nestjs/microservices';
 import { IUser, UserInfo } from './interfaces/user/user.interface';
 import { UserService } from './user.service';
 import { User } from './users/user.entity';
-const jsonwebtoken = require('jsonwebtoken');
 
 @Controller()
 export class UserController {
