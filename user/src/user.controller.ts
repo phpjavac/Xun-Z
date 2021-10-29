@@ -28,4 +28,8 @@ export class UserController {
   accumulate(data: number[]): number {
     return (data || []).reduce((a, b) => a + b);
   }
+  @MessagePattern('submit_blog')
+  public async submitBlog(blogContent: { title: string; content: string }) {
+    const result = await this.appService;
+  }
 }

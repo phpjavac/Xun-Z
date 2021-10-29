@@ -2,7 +2,9 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { logger } from './middleware/logger.middleware';
+import { AuthTokenMiddleware } from './middleware/auth.middleware';
 
+// const AuthTokenMiddleware = require('./middleware/auth.middleware')
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
@@ -19,6 +21,9 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api/v1');
   app.use(logger);
+  // app.use(new AuthTokenMiddleware());
+  // app.use(AuthTokenMiddleware);
+
   await app.listen(3000);
 }
 bootstrap();

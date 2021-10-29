@@ -1,10 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { LoginUserFace } from './interface/user/dto/login-user-dto';
-const jwt = require('jsonwebtoken');
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class AuthService {
+  authTokenAnalysis(token: string) {
+    const auth = jwt.verify(token, process.env.SECRET_KEY);
+    if (!auth) return false;
+    return auth;
+  }
   creat(): boolean {
     throw new Error('Method not implemented.');
   }

@@ -20,4 +20,9 @@ export class AuthController {
     const result = await this.appService.authLoginToken(userId);
     return result;
   }
+  @MessagePattern('auth_token_analysis')
+  async authTokenAnalysis(token: string) {
+    const result = await this.appService.authTokenAnalysis(token);
+    return result;
+  }
 }

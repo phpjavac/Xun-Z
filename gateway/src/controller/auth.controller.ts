@@ -6,7 +6,7 @@ import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 @ApiTags('auth')
 export class AuthController {
   constructor(@Inject('AUTH_SERVICE') private client: ClientProxy) {}
-  @Post('login')
+  @Post('testlogin')
   @ApiOkResponse({
     type: String,
   })

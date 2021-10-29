@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ClientProxyFactory } from '@nestjs/microservices';
 import { AuthController } from './controller/auth.controller';
 import { UserController } from './controller/user.controller';
@@ -7,6 +7,8 @@ import { BlogController } from './controller/blog.controller';
 import { HttpExceptionFilter } from './providers/interceptor/http-exception.filter';
 import { ApiInterceptor } from './providers/interceptor/api.interceptor';
 import { ConfigService } from './services/config/config.service';
+import { AuthTokenMiddleware } from './middleware/auth.middleware';
+import { AuthGuard } from './services/guards/authorization.guard';
 
 @Module({
   imports: [],
@@ -36,6 +38,7 @@ import { ConfigService } from './services/config/config.service';
     },
     { provide: APP_INTERCEPTOR, useClass: ApiInterceptor },
     { provide: APP_FILTER, useClass: HttpExceptionFilter },
+    { provide: APP_GUARD, useClass: AuthGuard },
   ],
 })
 export class AppModule {}

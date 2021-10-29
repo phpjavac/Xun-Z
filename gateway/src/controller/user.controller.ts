@@ -19,6 +19,7 @@ import { IUser } from '../interface/user/user.interface';
 import { ApiException } from '../providers/interceptor/api.interceptor';
 import { ApiCode } from '../enum/api-code.enum';
 import { loginUserDto } from '../interface/user/dto/login-user-dto';
+import { Authorization } from '../decorator/authorization.decorator';
 
 @Controller('user')
 @ApiTags('user')
@@ -35,6 +36,7 @@ export class UserController {
     return '注册成功';
   }
   @Post('login')
+  @Authorization(false)
   async loginUser(@Body() userInfo: loginUserDto) {
     const loginUserResponse = await firstValueFrom(
       this.userServiceClient.send('user_login', userInfo),
@@ -45,6 +47,7 @@ export class UserController {
   @ApiParam({
     name: 'code',
   })
+  @Authorization(true)
   async getUser(
     @Param('code') code,
     @Res() res: Response,

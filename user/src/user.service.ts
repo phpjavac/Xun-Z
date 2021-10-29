@@ -18,8 +18,6 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
-    @InjectRepository(Blog)
-    private readonly blogRepository: Repository<Blog>,
     @Inject('AUTH_SERVICE')
     private authClient: ClientProxy, // @Inject('USER_SERVICE') private userServiceClient: ClientProxy,
   ) {}
@@ -48,5 +46,9 @@ export class UserService {
       this.authClient.send('auth_login_token', code),
     );
     return { code, role, token };
+  }
+
+  public async submitBlog(blogContent: { title: string; content: string }) {
+    return false;
   }
 }

@@ -7,15 +7,13 @@ import {
   JoinColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { User } from './user.entity';
 @Entity()
 export class Blog {
   @PrimaryGeneratedColumn('uuid')
   code: string;
 
-  @OneToOne((type) => User)
-  @JoinColumn()
-  user: User;
+  @Column()
+  user: string;
 
   @Column()
   name: string;
@@ -29,6 +27,6 @@ export class Blog {
   @Column()
   title: string;
 
-  @Column()
+  @Column('text')
   content: string;
 }
