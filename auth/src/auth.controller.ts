@@ -1,6 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { AuthService } from './auth.service';
+import { LoginUserFace } from './interface/user/dto/login-user-dto';
 
 @Controller()
 export class AuthController {
@@ -10,7 +11,18 @@ export class AuthController {
     return this.appService.creat();
   }
   @MessagePattern('auth_user_login')
-  login(): boolean {
-    return this.appService.login();
+  async login(loginInfo: LoginUserFace) {
+    const result = await this.appService.login(loginInfo);
+    return result;
+  }
+  @MessagePattern('auth_login_token')
+  async authLoginToken(userId: string) {
+    const result = await this.appService.authLoginToken(userId);
+    return result;
+  }
+  @MessagePattern('auth_token_analysis')
+  async authTokenAnalysis(token: string) {
+    const result = await this.appService.authTokenAnalysis(token);
+    return result;
   }
 }

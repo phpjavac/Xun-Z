@@ -1,3 +1,5 @@
+import { Transport } from '@nestjs/microservices';
+
 export class ConfigService {
   private readonly envConfig: { [key: string]: any } = null;
 
@@ -11,6 +13,13 @@ export class ConfigService {
       username: process.env.SQL_USERNAME,
       password: process.env.SQL_PASSWORD,
       database: process.env.SQL_DATABASE,
+    };
+    // 配置auth
+    this.envConfig.auth = {
+      options: {
+        port: process.env.AUTH_SERVICE_PORT,
+      },
+      transport: Transport.TCP,
     };
   }
 

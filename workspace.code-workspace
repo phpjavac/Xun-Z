@@ -8,7 +8,15 @@
 		},
 		{
 			"path": "user"
+		},
+		{
+			"path": "blog"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"editor.codeActionsOnSave": {
+			"source.fixAll.eslint": true
+	},
+	"eslint.lintTask.enable": true,
+	}
 }
