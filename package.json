@@ -4,8 +4,28 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky install && node ./scripts/commitMsgHook.js"
+  },
+  "lint-staged": {
+    "blog-web/*.js": [
+      "eslint --fix"
+    ],
+    "blog-web/*.ts": [
+      "eslint --fix"
+    ],
+    "blog-web/*.vue": [
+      "eslint --fix"
+    ]
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@commitlint/cli": "^14.1.0",
+    "@commitlint/config-conventional": "^14.1.0",
+    "commitlint-plugin-function-rules": "^1.4.0",
+    "devmoji": "^2.3.0",
+    "husky": "^7.0.4",
+    "lint-staged": "^11.2.6"
+  }
 }
