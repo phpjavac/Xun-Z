@@ -1,8 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref } from "vue";
+
+const msg = ref("this is markdown editor");
+
 // const emits = defineEmits([]);
 // const props = defineProps({});
-const props = defineProps<{
-id?: string
-}>()
 </script>
+
+<template>
+  <div>{{ msg }}</div>
+</template>
