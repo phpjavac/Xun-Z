@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint --fix --ext .ts,.js,.vue blog-web",
     "prepare": "husky install && node ./scripts/commitMsgHook.js"
   },
   "lint-staged": {

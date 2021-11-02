@@ -6,17 +6,6 @@
     "build": "vue-tsc --noEmit && vite build",
     "serve": "vite preview"
   },
-  "lint-staged": {
-    "*.js": [
-      "eslint --fix"
-    ],
-    "*.ts": [
-      "eslint --fix"
-    ],
-    "*.vue": [
-      "eslint --fix"
-    ]
-  },
   "dependencies": {
     "ant-design-vue": "^2.2.8",
     "axios": "^0.24.0",
