@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import HelloWorld from "./components/HelloWorld.vue";
+import { Button as aButton } from "ant-design-vue";
 </script>
 
 <template>
-  <HelloWorld msg="Hello Vue 3 + TypeScript + Vite" />
+  <aButton>asdf</aButton>
 </template>
 
 <style></style>
