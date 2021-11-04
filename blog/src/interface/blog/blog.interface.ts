@@ -1,5 +1,6 @@
 import { Blog } from '../../blogs/blogs.entity';
 export interface BlogContentFace {
+  id?: string;
   title: string;
   content: string;
 }
