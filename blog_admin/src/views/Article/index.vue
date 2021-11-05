@@ -7,10 +7,12 @@ div
             el-table-column(v-for="item in table",:label="item.name",:prop="item.value",:key="item.value")
             el-table-column(label="操作")
                 template(slot-scope="scope")
-                    el-button(type="text")   预览
+                    el-button(type="text",@click='showMsg(scope.row.id)')   预览
                     el-button(type="text",@click='edit(scope.row.id)')   编辑
                     el-button(type="text",@click='fun_delete(scope.row.id)')   删除
         el-pagination(:total="page.total",:page-size="pageData.pageSize",layout="prev, pager, next",@next-click="pageChange",@prev-click="pageChange")
+    el-dialog(:visible.sync='articleVisible')
+      mavon-editor(v-model="articleInfo",ref="mEditor",:editable='false')
 </template>
 <script>
 export default {
@@ -28,10 +30,19 @@ export default {
         page: 1,
         pageSize: 20
       },
-      ArticleData: []
+      ArticleData: [],
+      articleVisible: false, // modal
+      articleInfo: '', // modal-data
     };
   },
   methods: {
+    showMsg(id) {
+      this.$http.getArticle(id).then(res => {
+        const { content }  = res.data.data;
+        this.articleInfo = content;
+        this.articleVisible = true;
+      })
+    },
     edit(id) {
       console.log(id);
       this.$router.push(`/article/edit/${id}`);
