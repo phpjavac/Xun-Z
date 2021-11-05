@@ -30,4 +30,8 @@ export class BlogController {
     const result = this.appService.searchBlogInfo(code);
     return result;
   }
+  @MessagePattern('get_test')
+  public async getTest() {
+    return 'test';
+  }
 }
