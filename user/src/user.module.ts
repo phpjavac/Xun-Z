@@ -4,17 +4,16 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { ConfigService } from './services/config/config.service';
 import { User } from './users/user.entity';
-import { Blog } from './users/blog.entity';
 import { ClientProxyFactory } from '@nestjs/microservices';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       ...new ConfigService().get('sql'),
-      entities: [User, Blog],
+      entities: [User],
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([User, Blog]),
+    TypeOrmModule.forFeature([User]),
   ],
   controllers: [UserController],
   providers: [
