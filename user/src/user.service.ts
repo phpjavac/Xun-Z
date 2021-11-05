@@ -1,4 +1,3 @@
-import { Blog } from './users/blog.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IUser, UserInfo } from './interfaces/user/user.interface';
