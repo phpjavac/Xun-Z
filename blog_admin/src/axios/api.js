@@ -47,11 +47,7 @@ class Api {
     return this.$http.get(`blog/findOne/${id}`);
   }
   deleteArticle(id) {
-    return this.$http.delete(`./api/article`, {
-      params: {
-        id: id
-      }
-    });
+    return this.$http.put(`blog/remove/${id}`);
   }
   // 获取数据库里的工时
   getworkingHours() {

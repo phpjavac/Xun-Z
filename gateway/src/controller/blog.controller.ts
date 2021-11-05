@@ -6,6 +6,7 @@ import {
   Get,
   Req,
   Param,
+  Put,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
@@ -45,6 +46,17 @@ export class BlogController {
   ): Promise<BlogPageResponseDto> {
     const response = await firstValueFrom(this.client.send('blog_list', query));
     return response;
+  }
+
+  @Put('remove/:id')
+  @ApiParam({
+    name: 'id',
+  })
+  async remove(@Param('id') id) {
+    const removeResponse = await firstValueFrom(
+      this.client.send('blog_remove', id),
+    );
+    return removeResponse;
   }
 
   @Get('user')

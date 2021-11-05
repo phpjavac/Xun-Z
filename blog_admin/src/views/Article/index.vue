@@ -48,10 +48,12 @@ export default {
       this.$router.push(`/article/edit/${id}`);
     },
     fun_delete(id) {
-      this.$http.deleteArticle(id).then(() => {
-        this.$message.success("删除成功");
-        
-      });
+      this.$confirm('确定要删除该数据吗？').then(()=>{
+          this.$http.deleteArticle(id).then(() => {
+            this.$message.success("删除成功");
+            this.pageChange(this.pageData.page);
+          });
+      })
     },
     pageChange(value) {
       this.pageData.page = value;

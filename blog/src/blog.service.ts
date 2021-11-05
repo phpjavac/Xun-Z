@@ -4,7 +4,7 @@ import {
   SearchBlogInfo,
 } from './interface/blog/blog.interface';
 import { Blog } from './blogs/blogs.entity';
-import { Repository, getRepository } from 'typeorm';
+import { Repository, getRepository, getConnection } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   BlogPageRequest,
@@ -80,5 +80,18 @@ export class BlogService {
     }
 
     return null;
+  }
+  public async blogRemove(blogId: string) {
+    try {
+      await getConnection()
+        .createQueryBuilder()
+        .delete()
+        .from(Blog)
+        .where('id = :id', { id: blogId })
+        .execute();
+      return null;
+    } catch (error) {
+      return error;
+    }
   }
 }
