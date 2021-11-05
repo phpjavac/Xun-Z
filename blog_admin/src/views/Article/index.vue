@@ -19,6 +19,7 @@ export default {
       page: { total: 0 },
       table: [
         { name: "标题", value: "title" },
+        { name: "简介", value: "summary" },
         { name: "作者", value: "user" },
         { name: "创建时间", value: "createTime" },
         { name: "最近更新", value: "updateTime" }

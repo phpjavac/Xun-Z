@@ -42,6 +42,7 @@ export class BlogService {
     const filed = [
       'blog.id',
       'blog.user',
+      'blog.summary',
       'blog.title',
       'blog.createTime',
       'blog.updateTime',
