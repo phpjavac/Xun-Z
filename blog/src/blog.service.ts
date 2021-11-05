@@ -71,6 +71,7 @@ export class BlogService {
     blog.user = 'testUser';
     blog.title = blogContent.title;
     blog.content = blogContent.content;
+    blog.summary = blogContent.summary;
     if (!!blogContent.id) {
       await this.blogRepository.update(blogContent.id, blog);
     } else {
