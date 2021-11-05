@@ -4,8 +4,12 @@ import {
   SearchBlogInfo,
 } from './interface/blog/blog.interface';
 import { Blog } from './blogs/blogs.entity';
-import { Repository } from 'typeorm';
+import { Repository, getRepository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import {
+  BlogPageRequest,
+  BlogPageResponse,
+} from './interface/common/page.interface';
 
 @Injectable()
 export class BlogService {
@@ -31,12 +35,47 @@ export class BlogService {
     );
     return result;
   }
+  public async blogFindAll(
+    query: BlogPageRequest,
+  ): Promise<BlogPageResponse<Blog>> {
+    const { pageNo, pageSize } = query;
+    const filed = [
+      'blog.id',
+      'blog.user',
+      'blog.title',
+      'blog.createTime',
+      'blog.updateTime',
+    ];
+    const [list, total] = await getRepository(Blog)
+      .createQueryBuilder('blog')
+      .select(filed)
+      .skip((pageNo - 1) * pageSize)
+      .take(pageSize)
+      .orderBy('blog.updateTime')
+      .getManyAndCount();
+    const response = {
+      pageNo,
+      pageSize,
+      list,
+      total,
+    };
+
+    return response;
+  }
+  public async blogFindOne(blogId: string): Promise<BlogContentFace> {
+    const blogInfo = this.blogRepository.findOne(blogId);
+    return blogInfo;
+  }
   public async submitBlog(blogContent: BlogContentFace) {
     const blog = new Blog();
     blog.user = 'testUser';
     blog.title = blogContent.title;
     blog.content = blogContent.content;
-    await this.blogRepository.save(blog);
+    if (!!blogContent.id) {
+      await this.blogRepository.update(blogContent.id, blog);
+    } else {
+      await this.blogRepository.save(blog);
+    }
 
     return null;
   }
