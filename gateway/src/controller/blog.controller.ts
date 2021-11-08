@@ -17,6 +17,9 @@ import {
   BlogPageResponseDto,
 } from '../interface/blog/dto/find-all-blog-dto';
 import { Authorization } from '../decorator/authorization.decorator';
+import { IResponse } from '../interface/common/response.interface';
+import { CreateTagDto } from '../interface/tag/dto/create-tag.dto';
+import { TagFindAll } from '../interface/tag/dto/find-tag.dto';
 
 @Controller('blog')
 @ApiTags('blog')
@@ -81,16 +84,35 @@ export class BlogController {
   @Post('tagCreate')
   @Authorization(true)
   @ApiBearerAuth('access-token')
-  async tagFindAll(@Body() query, @Req() request) {
+  async tagCreate(@Body() query: CreateTagDto, @Req() request) {
     const tokenInfo = await firstValueFrom(
       this.authClient.send(
         'auth_token_analysis',
         request.headers.authorization,
       ),
     );
-    const createResponse = await firstValueFrom(
+    const createResponse = await firstValueFrom<IResponse<boolean>>(
       this.client.send('tag_create', { ...query, userCode: tokenInfo.key }),
     );
     return createResponse;
+  }
+
+  @Put('tagRemove/:id')
+  @Authorization(true)
+  @ApiParam({
+    name: 'id',
+  })
+  async tagRemove(@Param('id') id: string) {
+    const removeResponse = await firstValueFrom(
+      this.client.send('tag_remove', id),
+    );
+    return removeResponse;
+  }
+
+  @Post('tagFindAll')
+  @Authorization(true)
+  async tagFindAll(@Body() query: TagFindAll) {
+    const response = await firstValueFrom(this.client.send('tag_list', query));
+    return response;
   }
 }

@@ -5,15 +5,16 @@ import { BlogService } from './blog.service';
 import { ClientProxyFactory } from '@nestjs/microservices';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Blog } from './blogs/blogs.entity';
+import { Tag } from './blogs/tag.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       ...new ConfigService().get('sql'),
-      entities: [Blog],
+      entities: [Blog, Tag],
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([Blog]),
+    TypeOrmModule.forFeature([Blog, Tag]),
   ],
   controllers: [BlogController],
   providers: [

@@ -10,6 +10,8 @@ import {
   BlogPageRequest,
   BlogPageResponse,
 } from './interface/common/page.interface';
+import { Tag } from './blogs/tag.entity';
+import { TagFindAll } from './interface/tag/dto/find-tag.dto';
 
 @Injectable()
 export class BlogService {
@@ -21,6 +23,9 @@ export class BlogService {
   getHello(): string {
     return 'Hello World!';
   }
+  /**
+   * blog-博客模块
+   */
   async searchBlogInfo(code: string): Promise<SearchBlogInfo[]> {
     const blog = new Blog();
     blog.user = code;
@@ -88,6 +93,42 @@ export class BlogService {
         .delete()
         .from(Blog)
         .where('id = :id', { id: blogId })
+        .execute();
+      return null;
+    } catch (error) {
+      return error;
+    }
+  }
+  /**
+   * tag-标签模块
+   */
+  public async tagCreate(data) {
+    try {
+      await getConnection()
+        .createQueryBuilder()
+        .insert()
+        .into(Tag)
+        .values([data])
+        .execute();
+      return null;
+    } catch (error) {
+      return error;
+    }
+  }
+  public async tagFindAll(data: TagFindAll) {
+    console.log(data, 'this is where');
+    const tagList = await getRepository(Tag)
+      .createQueryBuilder('tag')
+      .getMany();
+    return tagList;
+  }
+  public async tagRemove(tagId: string) {
+    try {
+      await getConnection()
+        .createQueryBuilder()
+        .delete()
+        .from(Tag)
+        .where('id = :id', { id: tagId })
         .execute();
       return null;
     } catch (error) {
