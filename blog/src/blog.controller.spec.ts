@@ -1,22 +1,32 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppController } from './blog.controller';
-import { AppService } from './blog.service';
+import { BlogController } from './blog.controller';
+import { BlogService } from './blog.service';
+
+const ServiceProvider = {
+  provide: BlogService,
+  useValue: BlogController,
+};
 
 describe('AppController', () => {
-  let appController: AppController;
+  let appController: BlogController;
+  let appService: BlogService;
+  // let client: ClientProxy;
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
-      controllers: [AppController],
-      providers: [AppService],
+      controllers: [BlogController],
+      providers: [ServiceProvider],
     }).compile();
+    // app = app.createNestApplication();
+    await app.init();
 
-    appController = app.get<AppController>(AppController);
+    appService = app.get<BlogService>(BlogService);
+    appController = app.get<BlogController>(BlogController);
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+    it('测试获取test', async () => {
+      expect(await appController.getTest()).toBe('test');
     });
   });
 });

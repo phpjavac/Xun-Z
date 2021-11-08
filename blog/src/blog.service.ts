@@ -4,7 +4,7 @@ import {
   SearchBlogInfo,
 } from './interface/blog/blog.interface';
 import { Blog } from './blogs/blogs.entity';
-import { Repository, getRepository } from 'typeorm';
+import { Repository, getRepository, getConnection } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   BlogPageRequest,
@@ -42,6 +42,7 @@ export class BlogService {
     const filed = [
       'blog.id',
       'blog.user',
+      'blog.summary',
       'blog.title',
       'blog.createTime',
       'blog.updateTime',
@@ -71,6 +72,7 @@ export class BlogService {
     blog.user = 'testUser';
     blog.title = blogContent.title;
     blog.content = blogContent.content;
+    blog.summary = blogContent.summary;
     if (!!blogContent.id) {
       await this.blogRepository.update(blogContent.id, blog);
     } else {
@@ -78,5 +80,18 @@ export class BlogService {
     }
 
     return null;
+  }
+  public async blogRemove(blogId: string) {
+    try {
+      await getConnection()
+        .createQueryBuilder()
+        .delete()
+        .from(Blog)
+        .where('id = :id', { id: blogId })
+        .execute();
+      return null;
+    } catch (error) {
+      return error;
+    }
   }
 }

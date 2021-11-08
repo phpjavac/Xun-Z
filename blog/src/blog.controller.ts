@@ -25,9 +25,18 @@ export class BlogController {
     const result = this.appService.blogFindAll(query);
     return result;
   }
+  @MessagePattern('blog_remove')
+  public async blogRemove(blogId: string) {
+    const result = this.appService.blogRemove(blogId);
+    return result;
+  }
   @MessagePattern('get_user_blogs')
   public async getUserBlogs(code: string) {
     const result = this.appService.searchBlogInfo(code);
     return result;
+  }
+  @MessagePattern('get_test')
+  public async getTest() {
+    return 'test';
   }
 }

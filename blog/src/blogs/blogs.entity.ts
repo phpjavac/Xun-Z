@@ -24,6 +24,9 @@ export class Blog {
   @Column()
   title: string;
 
+  @Column()
+  summary: string;
+
   @Column('text')
   content: string;
 }
