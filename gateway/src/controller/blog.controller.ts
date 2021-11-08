@@ -16,6 +16,8 @@ import {
   BlogPageRequestDto,
   BlogPageResponseDto,
 } from '../interface/blog/dto/find-all-blog-dto';
+import { Authorization } from '../decorator/authorization.decorator';
+import * as jwt from 'jsonwebtoken';
 
 @Controller('blog')
 @ApiTags('blog')
@@ -67,5 +69,17 @@ export class BlogController {
       this.client.send('get_user_blogs', 'testUser'),
     );
     return authTokenResponse;
+  }
+
+  @Post('tagCreate')
+  @Authorization(true)
+  async tagFindAll(@Body() query, @Req() request) {
+    const info = jwt.verify(request.headers.token, process.env.SECRET_KEY);
+    const paramData = {
+      ...query,
+      userCode: info.key,
+    };
+    console.log(paramData, 'info');
+    return null;
   }
 }
