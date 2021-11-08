@@ -4,7 +4,7 @@ const api = new Api();
 // 状态码错误信息
 api.$http.interceptors.request.use((res) => {
   const req = res;
-  req.headers.token = localStorage.token ? `${localStorage.token}` : '';
+  req.headers.Authorization = localStorage.token ? `Bearer ${localStorage.token}` : '';
   return req;
 });
 api.$http.interceptors.response.use((res) => {

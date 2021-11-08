@@ -7,7 +7,7 @@ import { firstValueFrom } from 'rxjs';
 export class AuthTokenMiddleware implements NestMiddleware {
   // constructor(@Inject('USER_SERVICE') private client: ClientProxy) {}
   async use(req: Request, res: Response, next: () => void) {
-    const headerToken = req.headers['token'] || null;
+    const headerToken = req.headers['authorization'] || null;
     if (!headerToken) return false;
     // const authResponse = await firstValueFrom(
     //   // this.client.send('auth_token_analysis', headerToken),
