@@ -30,15 +30,25 @@ export class BlogController {
   ) {}
   @Post('submitBlog')
   @Authorization(true)
-  async submitBlog(@Body() submitContent: SubmitBlogDto) {
+  @ApiBearerAuth('access-token')
+  async submitBlog(@Body() submitContent: SubmitBlogDto, @Req() request) {
+    const tokenInfo = await firstValueFrom(
+      this.authClient.send(
+        'auth_token_analysis',
+        request.headers.authorization,
+      ),
+    );
     const submitBlogResponse = await firstValueFrom(
-      this.client.send('blog_submit', submitContent),
+      this.client.send('blog_submit', {
+        ...submitContent,
+        user: tokenInfo.key,
+      }),
     );
     return submitBlogResponse;
   }
 
   @Get('findOne/:id')
-  @Authorization(true)
+  @Authorization(false)
   @ApiParam({
     name: 'id',
   })
@@ -50,7 +60,7 @@ export class BlogController {
   }
 
   @Post('findAll')
-  @Authorization(true)
+  @Authorization(false)
   async findAll(
     @Body() query: BlogPageRequestDto,
   ): Promise<BlogPageResponseDto> {
@@ -71,10 +81,8 @@ export class BlogController {
   }
 
   @Get('user')
-  @Authorization(true)
+  @Authorization(false)
   async getUserBlogs(@Req() request) {
-    // const headerToken = request.headers['token'] || null;
-    // if (!headerToken) return false;
     const authTokenResponse = await firstValueFrom(
       this.client.send('get_user_blogs', 'testUser'),
     );
@@ -110,7 +118,7 @@ export class BlogController {
   }
 
   @Post('tagFindAll')
-  @Authorization(true)
+  @Authorization(false)
   async tagFindAll(@Body() query: TagFindAll) {
     const response = await firstValueFrom(this.client.send('tag_list', query));
     return response;

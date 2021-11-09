@@ -12,6 +12,7 @@ import {
 } from './interface/common/page.interface';
 import { Tag } from './blogs/tag.entity';
 import { TagFindAll } from './interface/tag/dto/find-tag.dto';
+import { CreateTagDto } from './interface/tag/dto/create-tag.dto';
 
 @Injectable()
 export class BlogService {
@@ -73,18 +74,32 @@ export class BlogService {
     return blogInfo;
   }
   public async submitBlog(blogContent: BlogContentFace) {
-    const blog = new Blog();
-    blog.user = 'testUser';
-    blog.title = blogContent.title;
-    blog.content = blogContent.content;
-    blog.summary = blogContent.summary;
-    if (!!blogContent.id) {
-      await this.blogRepository.update(blogContent.id, blog);
-    } else {
-      await this.blogRepository.save(blog);
+    const { id, title, content, summary, user } = blogContent;
+    const newData = {
+      title,
+      content,
+      summary,
+    };
+    try {
+      const updateTime = new Date();
+      if (!!id) {
+        await getConnection()
+          .createQueryBuilder()
+          .update(Blog)
+          .set({ ...newData, updateTime })
+          .where('id = :id', { id })
+          .execute();
+      } else {
+        await getConnection()
+          .createQueryBuilder()
+          .insert()
+          .into(Blog)
+          .values([{ ...newData, user }])
+          .execute();
+      }
+    } catch (error) {
+      return error;
     }
-
-    return null;
   }
   public async blogRemove(blogId: string) {
     try {
@@ -102,13 +117,14 @@ export class BlogService {
   /**
    * tag-标签模块
    */
-  public async tagCreate(data) {
+  public async tagCreate(data: CreateTagDto & { userCode: string }) {
     try {
+      const { userCode, name } = data;
       await getConnection()
         .createQueryBuilder()
         .insert()
         .into(Tag)
-        .values([data])
+        .values([{ userCode, name }])
         .execute();
       return null;
     } catch (error) {
