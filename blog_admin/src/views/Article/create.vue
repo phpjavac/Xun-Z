@@ -6,7 +6,7 @@ div
             el-input(v-model="article.title",placeholder="TITLE")
         el-form-item(label="文章标签")
             el-select(v-model="article.tag",placeholder="TAG",multiple)
-                el-option(v-for='item in tagList',:value="item.name",:label="item.name",:key="item._id")
+                el-option(v-for='item in tagList',:value="item.id",:label="item.name",:key="item.id")
         el-form-item(label="文章简介")
             el-input(v-model="article.summary",placeholder="SUMMARY",type="textarea")
         el-form-item(label="")
@@ -73,7 +73,8 @@ export default {
     await  this.$http
         .getTagList()
         .then(res => {
-          this.tagList = res.data.list;
+          console.log(res.data, 'res.data')
+          this.tagList = res.data.data;
         })
         .catch(error => {
           this.$message.error(error.errorText);
