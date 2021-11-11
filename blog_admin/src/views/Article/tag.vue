@@ -19,15 +19,17 @@ export default {
   },
   methods: {
     close_tag(id) {
-      this.$http
-        .deleteTag(id)
-        .then(res => {
-          this.$message.success('操作成功！');
-          this.query();
-        })
-        .catch(error => {
-          this.$message.error(error.errorText);
-        });
+      this.$confirm('确定要删除该标签吗？删除后对应博客的标签也会消失。').then(()=>{
+        this.$http
+          .deleteTag(id)
+          .then(res => {
+            this.$message.success('操作成功！');
+            this.query();
+          })
+          .catch(error => {
+            this.$message.error(error.errorText);
+          });
+      })
     },
     fun_addTag() {
       this.$http
