@@ -13,6 +13,7 @@ import {
 import { Tag } from './blogs/tag.entity';
 import { TagFindAll } from './interface/tag/dto/find-tag.dto';
 import { CreateTagDto } from './interface/tag/dto/create-tag.dto';
+import { SubmitBlogDto } from './interface/blog/dto/submit-blog.dto';
 
 @Injectable()
 export class BlogService {
@@ -58,6 +59,7 @@ export class BlogService {
       .select(filed)
       .skip((pageNo - 1) * pageSize)
       .take(pageSize)
+      .leftJoinAndSelect('blog.tags', 'tags')
       .orderBy('blog.updateTime')
       .getManyAndCount();
     const response = {
@@ -70,39 +72,87 @@ export class BlogService {
     return response;
   }
   public async blogFindOne(blogId: string): Promise<BlogContentFace> {
-    const blogInfo = this.blogRepository.findOne(blogId);
-    return blogInfo;
+    try {
+      const info = await getRepository(Blog)
+        .createQueryBuilder('blog')
+        .where('blog.id = :id', { id: blogId })
+        .leftJoinAndSelect('blog.tags', 'tags')
+        .getOne();
+      return info;
+    } catch (error) {
+      return error;
+    }
   }
-  public async submitBlog(blogContent: BlogContentFace) {
-    const { id, title, content, summary, user } = blogContent;
-    const newData = {
+  public async submitBlog(blogContent: SubmitBlogDto) {
+    const { id, title, content, summary, user, tags } = blogContent;
+    const newData: Partial<Blog> = {
       title,
       content,
       summary,
     };
     try {
-      const updateTime = new Date();
       if (!!id) {
-        await getConnection()
-          .createQueryBuilder()
-          .update(Blog)
-          .set({ ...newData, updateTime })
-          .where('id = :id', { id })
-          .execute();
+        const blog = { ...newData, id };
+        await this.blogEdit(blog, tags);
       } else {
-        await getConnection()
-          .createQueryBuilder()
-          .insert()
-          .into(Blog)
-          .values([{ ...newData, user }])
-          .execute();
+        const blog = { ...newData, user };
+        await this.blogCreate(blog, tags);
       }
+      return null;
+    } catch (error) {
+      return error;
+    }
+  }
+  private async blogEdit(blog: Partial<Blog>, tags: string[]) {
+    try {
+      blog.updateTime = new Date();
+      // update:blog
+      await getConnection()
+        .createQueryBuilder()
+        .update(Blog)
+        .set(blog)
+        .where('id = :id', { id: blog.id })
+        .execute();
+      const oldTagsIds = await this.getTagIdsByBlogId(blog.id);
+      // 因为blogId并没有发生变化，不会触发外键删除
+      // update: blog-tags
+      await getConnection()
+        .createQueryBuilder()
+        .relation(Blog, 'tags')
+        .of(blog)
+        .remove(oldTagsIds);
+      await getConnection()
+        .createQueryBuilder()
+        .relation(Blog, 'tags')
+        .of(blog)
+        .add(tags);
+      return null;
+    } catch (error) {
+      return error;
+    }
+  }
+  private async blogCreate(blog: Partial<Blog>, tags: string[]) {
+    try {
+      const info = await getConnection()
+        .createQueryBuilder()
+        .insert()
+        .into(Blog)
+        .values(blog)
+        .execute();
+      Object.assign(blog, info.generatedMaps);
+      await getConnection()
+        .createQueryBuilder()
+        .relation(Blog, 'tags')
+        .of(blog)
+        .add(tags);
+      return null;
     } catch (error) {
       return error;
     }
   }
   public async blogRemove(blogId: string) {
     try {
+      // blogId被删除，触发外键删除关联表数据
       await getConnection()
         .createQueryBuilder()
         .delete()
@@ -113,6 +163,14 @@ export class BlogService {
     } catch (error) {
       return error;
     }
+  }
+  private async getTagIdsByBlogId(blogId: string) {
+    const oldTagEntity = await getConnection()
+      .createQueryBuilder()
+      .relation(Blog, 'tags')
+      .of(blogId)
+      .loadMany<Tag>();
+    return oldTagEntity.map((tag) => tag.id);
   }
   /**
    * tag-标签模块
@@ -150,5 +208,13 @@ export class BlogService {
     } catch (error) {
       return error;
     }
+  }
+  private async getBlogIdsByTagId(tagId: string) {
+    const oldBlogEntity = await getRepository(Blog)
+      .createQueryBuilder('blog')
+      .leftJoin('blog_tag', 'blog_tag', 'blog.id = blog_tag.blogId')
+      .where('blog_tag.tagId = :id', { id: tagId })
+      .getMany();
+    return oldBlogEntity.map((blog) => blog.id);
   }
 }

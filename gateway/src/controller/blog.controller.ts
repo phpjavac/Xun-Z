@@ -93,7 +93,7 @@ export class BlogController {
   @Authorization(true)
   @ApiBearerAuth('access-token')
   async tagCreate(@Body() query: CreateTagDto, @Req() request) {
-    const tokenInfo = await firstValueFrom(
+    const tokenInfo: { key: string } = await firstValueFrom(
       this.authClient.send(
         'auth_token_analysis',
         request.headers.authorization,

@@ -1,19 +1,18 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { ClientProxy, MessagePattern } from '@nestjs/microservices';
+import { Controller } from '@nestjs/common';
+import { MessagePattern } from '@nestjs/microservices';
 import { BlogService } from './blog.service';
-import { BlogContentFace } from './interface/blog/blog.interface';
-import { Inject } from '@nestjs/common';
 import { BlogPageRequest } from './interface/common/page.interface';
 import { CreateTagDto } from './interface/tag/dto/create-tag.dto';
 import { Tag } from './interface/tag/tag.interface';
 import { TagFindAll } from './interface/tag/dto/find-tag.dto';
+import { SubmitBlogDto } from './interface/blog/dto/submit-blog.dto';
 
 @Controller()
 export class BlogController {
   constructor(private readonly appService: BlogService) {}
 
   @MessagePattern('blog_submit')
-  public async submitBlog(blogContent: BlogContentFace) {
+  public async submitBlog(blogContent: SubmitBlogDto) {
     const result = this.appService.submitBlog(blogContent);
     return result;
   }
@@ -46,7 +45,9 @@ export class BlogController {
    * tag
    */
   @MessagePattern('tag_create')
-  public async tagCreate(data: CreateTagDto): Promise<boolean> {
+  public async tagCreate(
+    data: CreateTagDto & { userCode: string },
+  ): Promise<boolean> {
     const result = this.appService.tagCreate(data);
     return result;
   }

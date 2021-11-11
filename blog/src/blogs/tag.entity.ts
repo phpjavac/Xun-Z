@@ -3,7 +3,9 @@ import {
   Column,
   CreateDateColumn,
   PrimaryGeneratedColumn,
+  ManyToMany,
 } from 'typeorm';
+import { Blog } from './blogs.entity';
 @Entity()
 export class Tag {
   @PrimaryGeneratedColumn('uuid')
@@ -17,4 +19,7 @@ export class Tag {
 
   @CreateDateColumn()
   createTime: Date;
+
+  @ManyToMany(() => Blog, (blog) => blog.id)
+  blogs: Blog[];
 }
