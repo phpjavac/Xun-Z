@@ -5,6 +5,9 @@ div
         el-table(:data="ArticleData")
             el-table-column(type="selection")
             el-table-column(v-for="item in table",:label="item.name",:prop="item.value",:key="item.value")
+            el-table-column(label='标签')
+                template(slot-scope="scope")
+                    el-tag.tag(v-for="tag in scope.row.tags") {{tag.name}}
             el-table-column(label="操作")
                 template(slot-scope="scope")
                     el-button(type="text",@click='showMsg(scope.row.id)')   预览
@@ -94,3 +97,8 @@ export default {
   }
 };
 </script>
+
+<style lang="stylus" scoped>
+>>>.tag
+    margin 0 4px 4px 0
+</style>
