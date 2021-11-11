@@ -4,7 +4,7 @@ div
     div.content
         div.tag-list
             ul
-                el-tag(v-for='item in tagList',closable,:key="item._id",@close='close_tag(item._id)').tag    {{item.name}}
+                el-tag(v-for='item in tagList',closable,:key="item._id",@close='close_tag(item.id)').tag {{item.name}}
         div.add-tag
             el-input(v-model="addTag",placeholder="请输入标签")
             el-button(type="primary",@click='fun_addTag').add-button   添加标签
@@ -19,23 +19,25 @@ export default {
   },
   methods: {
     close_tag(id) {
-      this.$http
-        .deleteTag(id)
-        .then(res => {
-          this.$message.success(res.data.message);
-          this.tagList = res.data.list;
-        })
-        .catch(error => {
-          this.$message.error(error.errorText);
-        });
+      this.$confirm('确定要删除该标签吗？删除后对应博客的标签也会消失。').then(()=>{
+        this.$http
+          .deleteTag(id)
+          .then(res => {
+            this.$message.success('操作成功！');
+            this.query();
+          })
+          .catch(error => {
+            this.$message.error(error.errorText);
+          });
+      })
     },
     fun_addTag() {
       this.$http
-        .addTag({ tagName: this.addTag })
+        .addTag({ name: this.addTag })
         .then(res => {
           this.addTag = "";
-          this.tagList = res.data.list;
-          this.$message.success(res.data.message);
+          this.$message.success('操作成功！');
+          this.query();
         })
         .catch(error => {
           this.$message.error(error.errorText);
@@ -46,7 +48,7 @@ export default {
         .getTagList()
         .then(res => {
           console.log(res);
-          this.tagList = res.data.list;
+          this.tagList = res.data.data;
         })
         .catch(error => {
           console.log(error)

@@ -20,7 +20,7 @@ export default {
         .login({ code: this.code, password: this.password })
         .then(res => {
           if (res.data.code === 0) {
-            localStorage.token = res.data.token;
+            localStorage.token = res.data.data.token;
             localStorage.code = this.code
             this.$router.push("/index");
           }

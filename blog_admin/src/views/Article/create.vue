@@ -5,14 +5,14 @@ div
         el-form-item(label="文章标题")
             el-input(v-model="article.title",placeholder="TITLE")
         el-form-item(label="文章标签")
-            el-select(v-model="article.tag",placeholder="TAG",multiple)
-                el-option(v-for='item in tagList',:value="item.name",:label="item.name",:key="item._id")
+            el-select(v-model="article.tags",placeholder="TAG",multiple)
+                el-option(v-for='item in tagList',:value="item.id",:label="item.name",:key="item.id")
         el-form-item(label="文章简介")
             el-input(v-model="article.summary",placeholder="SUMMARY",type="textarea")
         el-form-item(label="")
             //- quill-editor(:options="establishOption",v-model="article.content")
             mavon-editor(v-model="article.content",ref="mEditor")
-        el-form-item(label="封面图片")
+        //- el-form-item(label="封面图片")
             el-upload(action="https://httpbin.org/post",drag,:on-success="upLoadSuccess")
                 i.el-icon-upload
                 div.el-upload__text 将文件拖到此处，或
@@ -30,10 +30,10 @@ export default {
       },
       article: {
         title: "",
-        tag: [],
+        tags: [],
         summary: "",
         content: "",
-        imgurl: ""
+        // imgurl: ""
       },
       tagList: []
     };
@@ -48,7 +48,7 @@ export default {
       ) {
         return this.$message.error("请填写完整！");
       }
-      this.article.code = localStorage.code
+      // this.article.code = localStorage.code
 
       
       const data = this.article
@@ -73,7 +73,8 @@ export default {
     await  this.$http
         .getTagList()
         .then(res => {
-          this.tagList = res.data.list;
+          console.log(res.data, 'res.data')
+          this.tagList = res.data.data;
         })
         .catch(error => {
           this.$message.error(error.errorText);
@@ -82,7 +83,8 @@ export default {
           return
         }
         this.$http.getArticle(this.$route.params.id).then(res=>{
-          this.article = res.data.data
+          this.article = res.data.data;
+          this.article.tags = res.data.data.tags.map((tag) => tag.id);
         })
     }
   },

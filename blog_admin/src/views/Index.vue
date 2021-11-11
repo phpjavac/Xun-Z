@@ -4,7 +4,7 @@ el-container.index
     div.msg 今天，又是充满希望的一天
     .enum.flex
       .info.your name
-      .pointer 退出
+      .pointer(@click='reset()') 退出
   el-aside.left
     el-menu(:default-active='activeIndex',router)
       el-menu-item(index="index")
@@ -36,7 +36,12 @@ export default {
       activeIndex: "index"
     };
   },
-  methods: {},
+  methods: {
+    reset() {
+      localStorage.clear();
+      this.$router.push("/");
+    }
+  },
   created() {}
 };
 </script>

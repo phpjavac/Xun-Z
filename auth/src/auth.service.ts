@@ -6,7 +6,7 @@ import * as jwt from 'jsonwebtoken';
 @Injectable()
 export class AuthService {
   authTokenAnalysis(token: string) {
-    const auth = jwt.verify(token, process.env.SECRET_KEY);
+    const auth = jwt.verify(token.substr(7), process.env.SECRET_KEY);
     if (!auth) return false;
     return auth;
   }
