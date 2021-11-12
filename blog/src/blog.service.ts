@@ -54,14 +54,28 @@ export class BlogService {
       'blog.createTime',
       'blog.updateTime',
     ];
+    // console.time('this is time');
     const [list, total] = await getRepository(Blog)
       .createQueryBuilder('blog')
       .select(filed)
       .skip((pageNo - 1) * pageSize)
       .take(pageSize)
-      .leftJoinAndSelect('blog.tags', 'tags')
       .orderBy('blog.updateTime')
       .getManyAndCount();
+    const actionAll = [];
+    for (let bi = 0; bi < list.length; bi += 1) {
+      const action = getConnection()
+        .createQueryBuilder()
+        .relation(Blog, 'tags')
+        .of(list[bi].id)
+        .loadMany()
+        .then((resList) => {
+          list[bi].tags = resList;
+        });
+      actionAll.push(action);
+    }
+    await Promise.all(actionAll);
+    // console.timeEnd('this is time');
     const response = {
       pageNo,
       pageSize,
